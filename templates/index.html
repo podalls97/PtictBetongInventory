@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Computer Inventory</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+
+    <!-- Top Navigation Bar -->
+    <nav class="navbar">
+        <div class="logo">Invento</div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#inventory">Inventory</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <div class="hamburger">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+    </nav>
+
+    <!-- Main Content Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>School Computer Inventory System</h1>
+            <p>Keep track of every computer and peripheral with ease.</p>
+        </div>
+    </section>
+
+    <!-- School and Device Selection -->
+    <section id="school-selection" class="school-selection">
+        <div class="container">
+            <h2>Select a School</h2>
+            <div class="custom-select">
+                <select id="schoolDropdown">
+                    <option value="">-- Select School --</option>
+                </select>
+            </div>
+
+            <h2>Select Device Type</h2>
+            <div class="custom-select">
+                <select id="deviceDropdown">
+                    <option value="">-- Select Device Type --</option>
+                    <option value="Peranti Cerdik">Peranti Cerdik</option>
+                    <option value="Peranti Guru">Peranti Guru</option>
+                    <option value="SPKR">SPKR</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <!-- Inventory Table Section -->
+    <section id="laptop-list" class="laptop-section">
+        <div class="container">
+            <h2>Total Peripheral: <span id="totalPeripheral">0</span></h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Model</th>
+                        <th>Serial Number</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="laptopTableBody">
+                    <!-- Dynamic laptop rows will be added here -->
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer>
+        <p>&copy; 2024 School Computer Inventory. All Rights Reserved.</p>
+    </footer>
+
+    <!-- JavaScript to handle dropdown and fetch data -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            fetchSchools();
+
+            $('#schoolDropdown, #deviceDropdown').change(fetchInventory);
+
+            function fetchSchools() {
+                $.ajax({
+                    url: '/get_schools',
+                    type: 'GET',
+                    success: function(schools) {
+                        $('#schoolDropdown').html('<option value="">-- Select School --</option>');
+                        schools.forEach(function(school) {
+                            $('#schoolDropdown').append(`<option value="${school.name}">${school.name}</option>`);
+                        });
+                    },
+                    error: function() {
+                        alert('Failed to load schools.');
+                    }
+                });
+            }
+
+            function fetchInventory() {
+                const selectedSchool = $('#schoolDropdown').val();
+                const selectedDeviceType = $('#deviceDropdown').val();
+
+                if (selectedSchool && selectedDeviceType) {
+                    $.ajax({
+                        url: '/get_inventory',
+                        type: 'POST',
+                        data: {
+                            school: selectedSchool,
+                            device_type: selectedDeviceType
+                        },
+                        success: function(response) {
+                            $('#laptopTableBody').html('');
+                            let total = 0;
+
+                            response.forEach(function(device, index) {
+                                total += 1;
+                                const row = `
+                                    <tr>
+                                        <td>${index + 1}</td>
+                                        <td>${device.model}</td>
+                                        <td>${device.serial_number}</td>
+                                        <td class="status ${device.status.toLowerCase().replace(' ', '-')}">${device.status}</td>
+                                    </tr>
+                                `;
+                                $('#laptopTableBody').append(row);
+                            });
+
+                            $('#totalPeripheral').text(total);
+                        },
+                        error: function() {
+                            $('#laptopTableBody').html('<tr><td colspan="4">No devices found.</td></tr>');
+                            $('#totalPeripheral').text(0);
+                        }
+                    });
+                }
+            }
+        });
+
+        // Hamburger toggle
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('open');
+        });
+
+        // Navbar background change on scroll
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            navbar.classList.toggle('scrolled', window.scrollY > 50);
+        });
+    </script>
+</body>
+</html>

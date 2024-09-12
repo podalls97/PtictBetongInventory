@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Device</title>
+</head>
+<body>
+
+    <h1>Add Device to Inventory</h1>
+    <form action="/add_device" method="POST">
+        <label for="school">School:</label>
+        <input type="text" id="school" name="school" required><br><br>
+
+        <label for="device_type">Device Type:</label>
+        <input type="text" id="device_type" name="device_type" required><br><br>
+
+        <label for="model">Model:</label>
+        <input type="text" id="model" name="model" required><br><br>
+
+        <label for="serial_number">Serial Number:</label>
+        <input type="text" id="serial_number" name="serial_number" required><br><br>
+
+        <label for="status">Status:</label>
+        <input type="text" id="status" name="status" required><br><br>
+
+        <button type="submit">Add Device</button>
+    </form>
+
+</body>
+</html>

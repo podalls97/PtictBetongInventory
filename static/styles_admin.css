@@ -1,0 +1,139 @@
+/* General Styles */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-image: linear-gradient(to right bottom, #21103b, #252b5b, #22467a, #166396, #0081b0, #0088b5, #008ebb, #0095c0, #0086b5, #0077aa, #00689e, #005991);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+
+}
+
+
+/* Login Container */
+.login-container, .add-school-section, .add-device-section {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    transition: all 0.3s ease-in-out;
+    margin: 20px;
+}
+
+/* Adding margin-bottom for spacing between sections */
+.add-school-section, .add-device-section {
+    margin-bottom: 20px;
+}
+
+/* Heading Style */
+h2 {
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* Input Fields */
+input, select {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 8px;
+    outline: none;
+    font-size: 1rem;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Input and Select Focus Effects */
+input:focus, select:focus {
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Button Styling */
+button {
+    padding: 12px 20px;
+    background: linear-gradient(to right, #36d1dc, #5b86e5); /* Blue gradient button */
+    color: white;
+    font-size: 1rem;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Button Ripple Effect */
+button:active {
+    background: linear-gradient(to right, #5b86e5, #36d1dc);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+}
+
+/* Smooth Slide Up Animation */
+@keyframes slideUp {
+    0% {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.login-container, .add-school-section, .add-device-section {
+    animation: slideUp 1s ease-in-out;
+}
+
+/* Input Error Message */
+.error-message {
+    color: #ff4f5e;
+    font-size: 0.9rem;
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 768px) {
+    .login-container, .add-school-section, .add-device-section {
+        max-width: 90%;
+        padding: 20px;
+    }
+    h2 {
+        font-size: 1.5rem;
+    }
+    button {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .login-container, .add-school-section, .add-device-section {
+        max-width: 95%;
+        padding: 15px;
+    }
+    h2 {
+        font-size: 1.2rem;
+    }
+    input, select {
+        font-size: 0.9rem;
+    }
+    button {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+}

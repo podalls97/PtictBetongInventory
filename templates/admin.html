@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - School & Device Management</title>
+    <link rel="stylesheet" href="/static/styles_admin.css">
+</head>
+<body>
+    <div class="login-container" id="login-section">
+        <h2>Admin Login</h2>
+        <form id="loginForm">
+            <label for="username">Username:</label>
+            <input type="text" id="username" placeholder="Enter username">
+            <br>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" placeholder="Enter password">
+            <br>
+
+            <button type="button" onclick="login()">Login</button>
+        </form>
+    </div>
+
+    <!-- Add School Section -->
+    <div id="admin-panel" style="display:none;">
+        <section id="add-school" class="add-school-section">
+            <div class="container">
+                <h2>Add a New School</h2>
+                <form id="addSchoolForm">
+                    <label for="schoolName">School Name:</label>
+                    <input type="text" id="schoolNameInput" placeholder="Enter school name">
+                    <br>
+                    <button type="button" onclick="submitSchool()">Add School</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Add Device Section -->
+        <section id="add-device" class="add-device-section">
+            <div class="container">
+                <h2>Add a New Device</h2>
+                <form id="addDeviceFormAdmin">
+                    <label for="school">School:</label>
+                    <select id="schoolInputAdmin">
+                        <option value="">-- Select School --</option>
+                        <!-- Options populated by JavaScript -->
+                    </select>
+                    <br>
+
+                    <label for="deviceType">Device Type:</label>
+                    <select id="deviceTypeInputAdmin">
+                        <option value="">-- Select Device Type --</option>
+                        <option value="Peranti Cerdik">Peranti Cerdik</option>
+                        <option value="Peranti Guru">Peranti Guru</option>
+                        <option value="SPKR">SPKR</option>
+                    </select>
+                    <br>
+
+                    <label for="model">Model:</label>
+                    <input type="text" id="modelInputAdmin" placeholder="Enter model">
+                    <br>
+
+                    <label for="serialNumber">Serial Number:</label>
+                    <input type="text" id="serialInputAdmin" placeholder="Enter serial number">
+                    <br>
+
+                    <label for="status">Status:</label>
+                    <select id="statusInputAdmin">
+                        <option value="In Use">In Use</option>
+                        <option value="In Repair">In Repair</option>
+                        <option value="Faulty">Faulty</option>
+                    </select>
+                    <br>
+
+                    <button type="button" onclick="submitDeviceAdmin()">Add Device</button>
+                </form>
+            </div>
+        </section>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username === 'admin' && password === 'admin123') {
+                alert('Login successful!');
+                document.getElementById('login-section').style.display = 'none';
+                document.getElementById('admin-panel').style.display = 'block';
+                fetchSchools();
+            } else {
+                alert('Invalid username or password!');
+            }
+        }
+
+        function submitSchool() {
+            const schoolName = document.getElementById('schoolNameInput').value;
+            if (!schoolName) {
+                alert('Please enter a school name!');
+                return;
+            }
+
+            $.ajax({
+                url: '/add_school',
+                type: 'POST',
+                data: { school_name: schoolName },
+                success: function(response) {
+                    alert(response.message);
+                    document.getElementById('addSchoolForm').reset();
+                    fetchSchools(); // Refresh the school dropdown
+                },
+                error: function(xhr, status, error) {
+                    alert(xhr.responseJSON.error);
+                }
+            });
+        }
+
+        function fetchSchools() {
+            $.ajax({
+                url: '/get_schools',
+                type: 'GET',
+                success: function(response) {
+                    const schoolSelect = document.getElementById('schoolInputAdmin');
+                    schoolSelect.innerHTML = '<option value="">-- Select School --</option>';
+                    response.forEach(function(school) {
+                        const option = document.createElement('option');
+                        option.value = school.name;
+                        option.textContent = school.name;
+                        schoolSelect.appendChild(option);
+                    });
+                },
+                error: function() {
+                    alert('Failed to fetch schools!');
+                }
+            });
+        }
+
+        function submitDeviceAdmin() {
+            const school = document.getElementById('schoolInputAdmin').value;
+            const deviceType = document.getElementById('deviceTypeInputAdmin').value;
+            const model = document.getElementById('modelInputAdmin').value;
+            const serialNumber = document.getElementById('serialInputAdmin').value;
+            const status = document.getElementById('statusInputAdmin').value;
+
+            if (!school || !deviceType || !model || !serialNumber || !status) {
+                alert("All fields are required!");
+                return;
+            }
+
+            $.ajax({
+                url: '/add_device',
+                type: 'POST',
+                data: {
+                    school: school,
+                    device_type: deviceType,
+                    model: model,
+                    serial_number: serialNumber,
+                    status: status
+                },
+                success: function(response) {
+                    alert(response.message);
+                    document.getElementById('addDeviceFormAdmin').reset();
+                },
+                error: function(xhr, status, error) {
+                    alert(xhr.responseJSON.error);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
